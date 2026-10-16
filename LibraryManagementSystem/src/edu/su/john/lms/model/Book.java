@@ -106,12 +106,6 @@ public class Book {
         this.availableCopies = scan.nextInt();scan.nextLine();
     }
 
-    public void issueCopy(){
-        if(this.availableCopies <=0)
-            System.out.println("No Books Available");
-        else
-            availableCopies--;
-    }
     public void returnCopy(){
         if(this.availableCopies >= this.totalCopies)
             System.out.println("All Books are already available!");
