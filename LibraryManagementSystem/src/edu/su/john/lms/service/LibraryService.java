@@ -1,9 +1,11 @@
 package edu.su.john.lms.service;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 import edu.su.john.lms.model.Book;
 import edu.su.john.lms.model.Loan;
@@ -41,60 +43,79 @@ public class LibraryService {
 
     public void displayBooks(){
         Book.printHeading();
-        for(Book bk:books){
-            System.out.println(bk);
-        }
+        /*for(Book objBook:books){
+            System.out.println(objBook);
+        }*/
+
+        books.stream()
+            .forEach(System.out::println);
     }
     public void addBook(){
-        Book bk = new Book();
-        bk.scanBook();
-        books.add(bk);
+        Book objBook = new Book();
+        objBook.scanBook();
+        books.add(objBook);
     }
     public void searchBooks(){
         List<Book> resultBooks = new ArrayList<>();
         System.out.println("Enter Title or Author or Category to search");
         String key = scan.nextLine();
-        for(Book bk:books){
-            if(bk.getTitle().contains(key) || bk.getAuthor().contains(key) || bk.getCategory().contains(key)){
-                resultBooks.add(bk);
+        /*for(Book objBook:books){
+            if(objBook.getTitle().contains(key) 
+                || objBook.getAuthor().contains(key) 
+                || objBook.getCategory().contains(key)){
+                resultBooks.add(objBook);
             }
-        }
+        }*/
+
+        resultBooks = books.stream()
+            .filter(book -> book.getTitle().contains(key) || book.getAuthor().contains(key) || book.getCategory().contains(key))
+            .collect(Collectors.toList());
+
+
         if(resultBooks.size() == 0){
             System.out.println("No books found!");
         }
         else{
             Book.printHeading();
-            for(Book bk:resultBooks)
-                System.out.println(bk);
+            for(Book objBook:resultBooks)
+                System.out.println(objBook);
         }
     }
     public void displayStudents(){
         Student.printHeading();
-        for(Student st:students){
-            System.out.println(st);
+        for(Student objStudent:students){
+            System.out.println(objStudent);
         }
     }
     public void registerStudent(){
-        Student st = new Student();
-        st.scanStudent();
-        students.add(st);
+        Student objStudent = new Student();
+        objStudent.scanStudent();
+        students.add(objStudent);
     }
     public Book findBookById(int bookId){
-        for(Book bk:books){
-            if(bk.getId() == bookId){
-                return bk;
+        for(Book objBook:books){
+            if(objBook.getId() == bookId){
+                return objBook;
             }
         }
         return null;
     }
     public Student findStudentById(int studentId){
-        for(Student st:students){
-            if(st.getId() == studentId){
-                return st;
+        for(Student objStudent:students){
+            if(objStudent.getId() == studentId){
+                return objStudent;
             }
         }
         return null;
     }
+    public Loan findLoanById(int loanId){
+        for(Loan objLoan:loans){
+            if(objLoan.getId() == loanId)
+                return objLoan;
+        }
+        return null;
+    }
+
     public void issueBook(){
         System.out.println("\n--- ISSUE BOOK ---");
         displayBooks();
@@ -106,6 +127,7 @@ public class LibraryService {
 
         Book bk = findBookById(bookId);
         Student st = findStudentById(studentId);
+
         if(bk == null)
         {
             System.out.println("Book Not Found");
@@ -116,9 +138,17 @@ public class LibraryService {
             System.out.println("Student Not Found");
             return;
         }
-        if(bk.getAvailableCopies() <=0){
+        if(bk.getAvailableCopies() <= 0){
             System.out.println("No Copies Available for this book!");
             return;
+        }
+        for(Loan objLoan:loans){
+            if(objLoan.getBook().getId() == bookId 
+                && objLoan.getStudent().getId() == studentId 
+                && !objLoan.isReturned()){
+                System.out.println("Student already has this book issued!");
+                return;
+            }
         }
         LocalDate today = LocalDate.now();
         Loan loan = new Loan(bk, st, today, 14);
@@ -130,14 +160,55 @@ public class LibraryService {
         System.out.println("\n--- RETURN BOOK ---");
         displayActiveLoans();
         System.out.println("Enter Loan ID:");
-        int loanID = scan.nextInt();scan.nextLine();
-        
+        int loanId = scan.nextInt();scan.nextLine();
+        Loan ln = findLoanById(loanId);
+        if(ln == null){
+            System.out.println("Loan Not Found!");
+            return;
+        }
+        if(ln.isReturned()){
+            System.out.println("This loan has already been returned!");
+            return;
+        }
+        Book bk = findBookById(ln.getBook().getId());
+        bk.setAvailableCopies(bk.getAvailableCopies() + 1);
+        ln.setReturnDate(LocalDate.now());
         System.out.println("Book returned successfully.");
     }
     public void displayActiveLoans(){
-        System.out.println("Method will display all Active Loans");
+        List<Loan> acLoans = new ArrayList<>();
+        for(Loan objLoan:loans){
+            if(!objLoan.isReturned()){
+                acLoans.add(objLoan);
+            }
+        }
+        if(acLoans.size()> 0)
+        {
+            System.out.println("\n--- ACTIVE LOANS ---");
+            Loan.printHeading();
+            for(Loan objLoan:acLoans)
+                System.out.println(objLoan);
+        }
+        else{
+            System.out.println("No Active Loans!");
+        }
     }
     public void displayOverdueLoans(){
-        System.out.println("Method will Display All Overdue Loans");
+        LocalDate today = LocalDate.now();
+        List<Loan> odLoans = new ArrayList<>();
+        for(Loan objLoan:loans){
+            if(ChronoUnit.DAYS.between(objLoan.getDueDate(),today) > 0 ){
+                odLoans.add(objLoan);
+            }
+        }
+        if(odLoans.size()>0){
+            System.out.println("\n--- OVERDUE LOANS ---");
+            Loan.printHeading();
+            for(Loan objLoan:odLoans)
+                System.out.println(objLoan);
+        }
+        else{
+            System.out.println("No Overdue Loans");
+        }
     }
 }
