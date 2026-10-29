@@ -1,0 +1,59 @@
+public class MyClass {
+
+    // ==========================================
+    // STUDENTS: IMPLEMENT YOUR LOGIC HERE
+    // ==========================================
+    public static boolean studentIsPrime(int n) {
+        // Write your prime checking logic here
+        
+        return false; // Placeholder: change this line
+    }
+
+    // ==========================================
+    // AUTOMATED TEST SUITE (DO NOT MODIFY)
+    // ==========================================
+    public static void main(String args[]) {
+        System.out.println("=========================================");
+        System.out.println("   RUNNING AUTOMATED PRIME CODE TESTS    ");
+        System.out.println("=========================================\n");
+
+        // Define test cases: {Input, Expected Outcome (1 for true, 0 for false), Weight}
+        int[][] testInputs = {
+            {2, 1, 2},   // Test Case 1: Smallest prime
+            {11, 1, 2},  // Test Case 2: Standard prime
+            {4, 0, 2},   // Test Case 3: Standard composite
+            {1, 0, 2},   // Test Case 4: Edge case (1)
+            {-7, 0, 2}   // Test Case 5: Edge case (Negative)
+        };
+
+        int totalScore = 0;
+        int maxPoints = 10;
+
+        for (int i = 0; i < testInputs.length; i++) {
+            int input = testInputs[i][0];
+            boolean expected = (testInputs[i][1] == 1);
+            int weight = testInputs[i][2];
+
+            // Run student logic
+            boolean result = studentIsPrime(input);
+            boolean passed = (result == expected);
+
+            System.out.print("Test Case " + (i + 1) + " (Input: " + input + ") -> ");
+            
+            if (passed) {
+                System.out.println("PASSED [+" + weight + " Points]");
+                totalScore += weight;
+            } else {
+                System.out.println("FAILED");
+                System.out.println("   -> Your code returned: " + (result ? "Prime" : "Not Prime"));
+                System.out.println("   -> Expected output:   " + (expected ? "Prime" : "Not Prime"));
+            }
+            System.out.println("-----------------------------------------");
+        }
+
+        // Final Score Output
+        System.out.println("\n=========================================");
+        System.out.println(" FINAL GRADE: " + totalScore + " / " + maxPoints + " POINTS");
+        System.out.println("=========================================");
+    }
+}
