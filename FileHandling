@@ -1,0 +1,82 @@
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Scanner;
+
+public class App {
+    public static void main(String[] args) throws Exception {
+        //createFile();
+        //writeFile();
+        //appendFile();
+        //readFile();
+        //deleteFile();
+    }
+
+    public static void createFile(){
+        File file = new File("student.txt");
+        try {
+            if(file.createNewFile())
+                System.out.println("File Created");
+            else
+                System.out.println("Already Exists");
+        } catch(IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public static void writeFile(){
+        try {
+	            FileWriter writer = new FileWriter("student.txt");
+	            writer.write("101,John,Java\n");
+	            writer.write("102,Saraswathy,Python\n");
+	            writer.write("103,Sumaya,Data Science\n");
+	            writer.write("104,Bala,Cyber Security\n");
+	            writer.close();
+	            System.out.println("Data Written");
+	        }
+	        catch(IOException e){
+	            System.out.println(e.getMessage());
+	        }
+    }
+
+    public static void appendFile(){
+        try {
+	            FileWriter writer = new FileWriter("student.txt",true);
+	            writer.write("105,Sakshi,Java\n");
+	            writer.write("106,Abhishek,Python\n");
+	            writer.write("107,Priya,Data Science\n");
+	            writer.write("108,Hitesh,Cyber Security");
+	            writer.close();
+	            System.out.println("Data Appended");
+	        }
+	        catch(IOException e){
+	            System.out.println(e.getMessage());
+	        }
+    }
+
+    public static void readFile(){
+        try {
+            File file = new File("student.txt");
+            Scanner sc = new Scanner(file);
+            while(sc.hasNextLine()){
+                System.out.println(sc.nextLine());
+            }
+            sc.close();
+        }
+        catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
+    public static void deleteFile(){
+        try{
+            File file = new File("student.txt");
+            if (file.delete())
+                System.out.println("File Deleted Successfully!");
+            else
+                System.out.println("File Not Available!");
+        }
+        catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
+}
