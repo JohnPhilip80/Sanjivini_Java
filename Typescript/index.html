@@ -1,0 +1,49 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Todo List</title>
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>My Todo List</h1>
+      <p class="subtitle">Manage your daily tasks</p>
+
+      <div class="input-section">
+        <input
+          type="text"
+          id="taskInput"
+          placeholder="Enter a new task..."
+        />
+        <button id="addTaskBtn">Add Task</button>
+      </div>
+
+      <div class="filter-section">
+        <button class="filter-btn active" data-filter="all">
+          All
+        </button>
+
+        <button class="filter-btn" data-filter="pending">
+          Pending
+        </button>
+
+        <button class="filter-btn" data-filter="completed">
+          Completed
+        </button>
+      </div>
+
+      <div class="task-summary">
+        <span id="taskCount">Total Tasks: 0</span>
+      </div>
+
+      <ul id="taskList"></ul>
+
+      <p id="emptyMessage">No tasks available. Add your first task!</p>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
